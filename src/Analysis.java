@@ -19,8 +19,8 @@ public class Analysis {
 		// secondary root
 		
 		String root = "Z:";
-		//String workDir = "W_2010_09_13";
-		String workDir = "W_2011_All_In_One";
+		String workDir = "W_2011_09_21";
+		//String workDir = "W_2011_All_In_One";
 		Double minLateralRootLength = 0.1;
 		
 		// Setup the working directories inside the main directory
@@ -48,7 +48,8 @@ public class Analysis {
 			    //System.out.println(accession);
 			    
 			    // Build the different file names
-				String inputFileName = inputDir+accession+".bmp.txt";
+			    // String inputFileName = inputDir+accession+".bmp.txt";
+			    String inputFileName = inputDir+accession+".txt";
 				String cleanupFileName = cleanupDir+accession+".txt";
 				String outputFileName = outputDir+accession+".csv";
 				
@@ -531,10 +532,10 @@ public class Analysis {
 		
 		for (int i=0; i<accessionnames.size(); i++) {
 
-			Double MRLmeanA = 0.00,MRLmeanB = 0.00,MRLmeanC = 0.00;
-			Double NLRmeanA = 0.00,NLRmeanB = 0.00,NLRmeanC = 0.00;
-			Double SLRLmeanA = 0.00,SLRLmeanB = 0.00,SLRLmeanC = 0.00;
-
+			Double MRLmeanA = 0.00,MRLmeanB = 0.00,MRLmeanC = 0.00,MRLmeanD = 0.00;
+			Double NLRmeanA = 0.00,NLRmeanB = 0.00,NLRmeanC = 0.00,NLRmeanD = 0.00;
+			Double SLRLmeanA = 0.00,SLRLmeanB = 0.00,SLRLmeanC = 0.00,SLRLmeanD = 0.00;
+			
 			for (int j=0; j<accessionlist.size(); j++) {
 				
 				if ((accessionnames.get(i).equals(accessionlist.get(j).getAccessionName())) &
@@ -561,8 +562,7 @@ public class Analysis {
 					//System.out.println(MRLmeanA+" "+NLRmeanA+" "+SLRLmeanA);
 				}
 			}	
-
-			
+		
 			for (int j=0; j<accessionlist.size(); j++) {
 				
 				if ((accessionnames.get(i).equals(accessionlist.get(j).getAccessionName())) &
@@ -614,19 +614,46 @@ public class Analysis {
 
 				}	
 			}
+
+			for (int j=0; j<accessionlist.size(); j++) {
+				
+				if ((accessionnames.get(i).equals(accessionlist.get(j).getAccessionName())) &
+					(accessionlist.get(j).getConcentration().equals(concentration)) &
+					(accessionlist.get(j).getBox().equals("D"))) {
+					source = accessionlist.get(j).getExperimentName()+";"+
+							 accessionlist.get(j).getAccessionName()+";"+
+							 accessionlist.get(j).getConcentration()+";"+
+							 accessionlist.get(j).getBox()+";"+
+							 ""+";"+
+							 roundDouble(accessionlist.get(j).getMRLmean(),"#.##")+";"+
+							 roundDouble(accessionlist.get(j).getNLRmean(),"#.##")+";"+
+							 roundDouble(accessionlist.get(j).getSLRLmean(),"#.##")+"\r\n";
+									
+					String newSource = source.replace(".", ",");			    
+					f1.write(newSource);
+
+					MRLmeanC = roundDouble(accessionlist.get(j).getMRLmean(),"#.##");
+					NLRmeanC = roundDouble(accessionlist.get(j).getNLRmean(),"#.##");
+					SLRLmeanC = roundDouble(accessionlist.get(j).getSLRLmean(),"#.##");
+					
+					//System.out.println(MRLmeanD+" "+NLRmeanD+" "+SLRLmeanD);
+
+				}	
+			}
 			
 //			System.out.println(MRLmeanA+" "+NLRmeanA+" "+SLRLmeanA);
 //			System.out.println(MRLmeanB+" "+NLRmeanB+" "+SLRLmeanB);
 //			System.out.println(MRLmeanC+" "+NLRmeanC+" "+SLRLmeanC);
+//			System.out.println(MRLmeanD+" "+NLRmeanD+" "+SLRLmeanD);
 //			System.out.println("---");
 
-			Double[] array1 = moveToArray(MRLmeanA,MRLmeanB,MRLmeanC);		
-			Double[] array2 = moveToArray(NLRmeanA,NLRmeanB,NLRmeanC);
-			Double[] array3 = moveToArray(SLRLmeanA,SLRLmeanB,SLRLmeanC);
+			Double[] array1 = moveToArray(MRLmeanA,MRLmeanB,MRLmeanC,MRLmeanD);		
+			Double[] array2 = moveToArray(NLRmeanA,NLRmeanB,NLRmeanC,NLRmeanD);
+			Double[] array3 = moveToArray(SLRLmeanA,SLRLmeanB,SLRLmeanC,SLRLmeanD);
 
 			if (array1.length != 0){
 				
-				// calculate the different mean values for accessions A,B,C
+				// calculate the different mean values for accessions A,B,C,D
 				Double MRLmean,NLRmean,SLRLmean;
 				
 				if (array1.length == 1){
@@ -660,7 +687,7 @@ public class Analysis {
 				String newSource = source.replace(".", ",");			    
 				f1.write(newSource);
 				
-				// calculate the different SD values for accessions A,B,C
+				// calculate the different SD values for accessions A,B,C,D
 				Double MRLsd,NLRsd,SLRLsd;
 				
 				if (array1.length == 1){
@@ -694,7 +721,7 @@ public class Analysis {
 				newSource = source.replace(".", ",");			    
 				f1.write(newSource);
 
-				// calculate the different SE values for accessions A,B,C
+				// calculate the different SE values for accessions A,B,C,D
 				Double MRLse,NLRse,SLRLse;
 				
 				if (array1.length == 1){
@@ -781,12 +808,11 @@ public class Analysis {
 
 		for (int i=0; i<accessionnames.size(); i++) {
 
-			Double MRLmeanA = 0.00,MRLmeanB = 0.00,MRLmeanC = 0.00;
-			Double NLRmeanA = 0.00,NLRmeanB = 0.00,NLRmeanC = 0.00;
-			Double SLRLmeanA = 0.00,SLRLmeanB = 0.00,SLRLmeanC = 0.00;
+			Double MRLmeanA = 0.00,MRLmeanB = 0.00,MRLmeanC = 0.00,MRLmeanD = 0.00;
+			Double NLRmeanA = 0.00,NLRmeanB = 0.00,NLRmeanC = 0.00,NLRmeanD = 0.00;
+			Double SLRLmeanA = 0.00,SLRLmeanB = 0.00,SLRLmeanC = 0.00,SLRLmeanD = 0.00;
 
 			for (int j=0; j<accessionlist.size(); j++) {
-				
 				
 				// Get the corrected data for box A
 				if ((accessionnames.get(i).equals(accessionlist.get(j).getAccessionName())) &
@@ -882,15 +908,48 @@ public class Analysis {
 				}	
 			}
 
+			for (int j=0; j<accessionlist.size(); j++) {
+
+				// Get the corrected data for box D
+				if ((accessionnames.get(i).equals(accessionlist.get(j).getAccessionName())) &
+					(accessionlist.get(j).getConcentration().equals(concentration)) &
+					(accessionlist.get(j).getBox().equals("D"))) {
+
+					Double MRLmeanCorrected = (accessionlist.get(j).getMRLmean()/globalmeans[0])-1;
+					Double NLRmeanCorrected = (accessionlist.get(j).getNLRmean()/globalmeans[1])-1;
+					Double SLRLmeanCorrected = (accessionlist.get(j).getSLRLmean()/globalmeans[2])-1;
+
+					source = accessionlist.get(j).getExperimentName()+";"+
+							 accessionlist.get(j).getAccessionName()+";"+
+							 accessionlist.get(j).getConcentration()+";"+
+							 accessionlist.get(j).getBox()+";"+
+							 ""+";"+
+							 roundDouble(MRLmeanCorrected,"#.##")+";"+
+							 roundDouble(NLRmeanCorrected,"#.##")+";"+
+							 roundDouble(SLRLmeanCorrected,"#.##")+"\r\n";
+
+					String newSource = source.replace(".", ",");			    
+					f1.write(newSource);
+
+					MRLmeanC = roundDouble(MRLmeanCorrected,"#.##");
+					NLRmeanC = roundDouble(NLRmeanCorrected,"#.##");
+					SLRLmeanC = roundDouble(SLRLmeanCorrected,"#.##");
+
+					//System.out.println(MRLmeanD+" "+NLRmeanD+" "+SLRLmeanD);
+				}	
+			}
+			
+			
 			//System.out.println(MRLmeanA+" "+NLRmeanA+" "+SLRLmeanA);
 			//System.out.println(MRLmeanB+" "+NLRmeanB+" "+SLRLmeanB);
 			//System.out.println(MRLmeanC+" "+NLRmeanC+" "+SLRLmeanC);
+			//System.out.println(MRLmeanD+" "+NLRmeanD+" "+SLRLmeanD);			
 			//System.out.println("---");
 
 			// move all the means to a specific array
-			Double[] array1 = moveToArray(MRLmeanA,MRLmeanB,MRLmeanC);		
-			Double[] array2 = moveToArray(NLRmeanA,NLRmeanB,NLRmeanC);
-			Double[] array3 = moveToArray(SLRLmeanA,SLRLmeanB,SLRLmeanC);
+			Double[] array1 = moveToArray(MRLmeanA,MRLmeanB,MRLmeanC,MRLmeanD);		
+			Double[] array2 = moveToArray(NLRmeanA,NLRmeanB,NLRmeanC,NLRmeanD);
+			Double[] array3 = moveToArray(SLRLmeanA,SLRLmeanB,SLRLmeanC,SLRLmeanD);
 			
 			//System.out.println(array1.length);
 			//System.out.println(array2.length);
@@ -1200,9 +1259,9 @@ public class Analysis {
         return uniqueNames;
     }    
 
-    static Double[] moveToArray(Double value1, Double value2, Double value3) {
+    static Double[] moveToArray(Double value1, Double value2, Double value3, Double value4) {
     	
-    	// Moves the 3 Double received as input into one array
+    	// Moves the 4 Doubles received as input into one array
     	// If a value is equal to zero then it is not added in the array
     	// This means the routine can return an array of size 0 !
     	
@@ -1216,6 +1275,9 @@ public class Analysis {
     	}
     	if (value3 != 0) {
     		myList.add(value3);
+    	}
+    	if (value4 != 0) {
+    		myList.add(value4);
     	}
 
     	Double [] myArray = new Double[myList.size()];
